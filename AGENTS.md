@@ -359,29 +359,11 @@ Recommendation should use Enum.
 
 ---
 
-# API Standards
+# Routing
 
-Use RESTful endpoints.
+The application uses web routes with Blade views.
 
-Examples:
-
-```text
-POST   /api/login
-POST   /api/register
-
-GET    /api/offers
-POST   /api/offers
-
-GET    /api/candidates
-
-POST   /api/analyses
-
-POST   /api/chat
-
-POST   /api/compare
-```
-
-Return JSON responses only.
+All routes are defined in `routes/web.php` using Laravel Breeze authentication.
 
 ---
 
@@ -591,7 +573,7 @@ This project has domain-specific skills available in `**/skills/**`. You MUST ac
 ## Artisan
 
 - Run Artisan commands directly via the command line (e.g., `php artisan route:list`). Use `php artisan list` to discover available commands and `php artisan [command] --help` to check parameters.
-- Inspect routes with `php artisan route:list`. Filter with: `--method=GET`, `--name=users`, `--path=api`, `--except-vendor`, `--only-vendor`.
+
 - Read configuration values using dot notation: `php artisan config:show app.name`, `php artisan config:show database.default`. Or read config files directly from the `config/` directory.
 
 ## Tinker
@@ -636,9 +618,6 @@ This project has domain-specific skills available in `**/skills/**`. You MUST ac
 
 - When creating new models, create useful factories and seeders for them too. Ask the user if they need any other things, using `php artisan make:model --help` to check the available options.
 
-## APIs & Eloquent Resources
-
-- For APIs, default to using Eloquent API Resources and API versioning unless existing API routes do not, then you should follow existing application convention.
 
 ## URL Generation
 
