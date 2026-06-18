@@ -1,0 +1,286 @@
+project:
+name: TalentMatch
+
+description: >
+AI-powered candidate pre-screening platform built with Laravel.
+HR agents create job offers, submit candidate CVs, receive structured
+AI analysis with matching scores and recommendations, and interact
+with a conversational assistant that uses tools and conversation memory.
+
+tech_stack:
+framework: Laravel 13
+language: PHP 8.4
+database: MySQL
+frontend: Blade
+styling: TailwindCSS
+queue_driver: database
+ai_sdk: laravel/ai
+
+architecture:
+style: MVC
+
+principles:
+- Service Layer Pattern
+- Form Request Validation
+- Eloquent ORM
+- Queue-based AI Processing
+- AI Agent with Tools
+- Persistent Conversation Memory
+
+entities:
+
+User:
+fields:
+- id
+- name
+- email
+- password
+- created_at
+- updated_at
+
+JobOffer:
+fields:
+- id
+- user_id
+- title
+- description
+- required_skills
+- minimum_experience
+- created_at
+
+Candidate:
+fields:
+- id
+- name
+- cv_text
+- created_at
+
+Analysis:
+fields:
+- id
+- job_offer_id
+- candidate_id
+- payload
+- extracted_skills
+- years_experience
+- education_level
+- languages
+- matching_score
+- strengths
+- weaknesses
+- missing_skills
+- recommendation
+- justification
+- status
+- created_at
+
+Conversation:
+fields:
+- id
+- analysis_id
+- title
+- created_at
+
+Message:
+fields:
+- id
+- conversation_id
+- role
+- content
+- created_at
+
+relationships:
+
+User:
+hasMany:
+- JobOffer
+
+JobOffer:
+belongsTo:
+- User
+
+```
+hasMany:
+  - Analysis
+```
+
+Candidate:
+hasMany:
+- Analysis
+
+Analysis:
+belongsTo:
+- JobOffer
+
+```
+belongsTo:
+  - Candidate
+
+hasMany:
+  - Conversation
+```
+
+Conversation:
+belongsTo:
+- Analysis
+
+```
+hasMany:
+  - Message
+```
+
+Message:
+belongsTo:
+- Conversation
+
+ai_requirements:
+
+structured_output:
+enabled: true
+
+```
+schema:
+
+  extracted_skills:
+    type: array
+
+  years_experience:
+    type: integer
+
+  education_level:
+    type: string
+
+  languages:
+    type: array
+
+  matching_score:
+    type: integer
+
+  strengths:
+    type: array
+
+  weaknesses:
+    type: array
+
+  missing_skills:
+    type: array
+
+  recommendation:
+    type: enum
+    values:
+      - interview
+      - pending
+      - reject
+
+  justification:
+    type: string
+```
+
+conversational_agent:
+enabled: true
+
+```
+memory:
+  persistent: true
+
+tools:
+  - getCandidateAnalysis
+  - getJobRequirements
+  - compareCandidates
+```
+
+queues:
+
+jobs:
+- AnalyzeCandidateJob
+
+casts:
+
+JobOffer:
+required_skills: array
+
+Analysis:
+payload: array
+extracted_skills: array
+languages: array
+strengths: array
+weaknesses: array
+missing_skills: array
+recommendation: enum
+
+enums:
+
+Recommendation:
+- interview
+- pending
+- reject
+
+AnalysisStatus:
+- pending
+- processing
+- completed
+- failed
+
+MessageRole:
+- user
+- assistant
+
+authentication:
+provider: Laravel Breeze
+
+validation:
+use_form_requests: true
+
+performance:
+prevent_n_plus_one: true
+eager_loading_required: true
+
+features:
+
+authentication:
+- register
+- login
+- logout
+
+job_offers:
+- create_offer
+- list_offers
+- view_offer
+- update_offer
+- delete_offer
+
+candidate_analysis:
+- submit_cv
+- analyze_cv
+- view_analysis
+- ranking_by_score
+
+assistant:
+- contextual_chat
+- tool_calling
+- conversation_memory
+- candidate_comparison
+
+testing:
+
+required:
+- feature_tests
+- unit_tests
+- validation_tests
+- ai_schema_tests
+- tool_tests
+
+restrictions:
+
+* No AI response outside the defined JSON schema
+* No business logic inside controllers
+* No synchronous AI analysis
+* No agent answers without tool usage
+* No N+1 database queries
+
+
+branches:
+- feature/job-offers
+- feature/candidate-analysis
+- feature/conversational-agent
+
