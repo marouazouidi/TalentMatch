@@ -135,6 +135,14 @@
                 </div>
             </div>
 
+            @if ($analysis->status === App\Enums\AnalysisStatus::Completed)
+                @include('analyses.partials.chat-panel', [
+                    'analysis' => $analysis,
+                    'conversation' => $conversation,
+                    'messages' => $messages,
+                ])
+            @endif
+
             <div class="mt-6">
                 <a href="{{ route('offers.show', $analysis->jobOffer) }}" class="text-sm text-gray-600 hover:text-gray-900">&larr; {{ __('Back to Offer') }}</a>
             </div>
