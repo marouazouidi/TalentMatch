@@ -41,6 +41,10 @@
                            class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 focus:bg-gray-700 active:bg-gray-900 focus:outline-none transition ease-in-out duration-150">
                             {{ __('Edit') }}
                         </a>
+                        <a href="{{ route('candidates.create', $offer) }}"
+                           class="inline-flex items-center px-4 py-2 bg-green-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-green-500 focus:outline-none transition ease-in-out duration-150">
+                            {{ __('Submit Candidate') }}
+                        </a>
                         <form action="{{ route('offers.destroy', $offer) }}" method="POST" class="inline">
                             @csrf
                             @method('DELETE')
@@ -54,6 +58,38 @@
                     </div>
                 </div>
             </div>
+
+            @if ($offer->analyses->isNotEmpty())
+                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg mt-6">
+                    <div class="p-6 text-gray-900">
+                        <h3 class="text-lg font-medium text-gray-900 mb-4">{{ __('Candidates') }}</h3>
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full divide-y divide-gray-200">
+                                <thead class="bg-gray-50">
+                                    <tr>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ __('Candidate') }}</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ __('Score') }}</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ __('Status') }}</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ __('Actions') }}</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="bg-white divide-y divide-gray-200">
+                                    @foreach ($offer->analyses->sortByDesc('matching_score') as $analysis)
+                                        <tr>
+                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $analysis->candidate?->name ?? __('Unknown') }}</td>
+                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $analysis->matching_score ?? '-' }}</td>
+                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $analysis->status->name }}</td>
+                                            <td class="px-6 py-4 whitespace-nowrap text-sm">
+                                                <a href="{{ route('analyses.show', $analysis) }}" class="text-indigo-600 hover:text-indigo-900">{{ __('View') }}</a>
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            @endif
         </div>
     </div>
 </x-app-layout>
