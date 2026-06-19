@@ -6,6 +6,7 @@ use App\Http\Requests\StoreCandidateRequest;
 use App\Models\Analysis;
 use App\Models\JobOffer;
 use App\Services\CandidateAnalysisService;
+use App\Services\ConversationService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
 
@@ -13,6 +14,7 @@ class CandidateAnalysisController extends Controller
 {
     public function __construct(
         private readonly CandidateAnalysisService $candidateAnalysisService,
+        private readonly ConversationService $conversationService,
     ) {}
 
     public function create(JobOffer $offer): View
@@ -43,6 +45,14 @@ class CandidateAnalysisController extends Controller
 
         $analysis->load(['candidate', 'jobOffer']);
 
-        return view('analyses.show', compact('analysis'));
+        $conversation = null;
+        $messages = collect();
+
+        if ($analysis->status === \App\Enums\AnalysisStatus::Completed) {
+            $conversation = $this->conversationService->findOrCreateConversation($analysis);
+            $messages = $conversation->messages()->orderBy('created_at')->get();
+        }
+
+        return view('analyses.show', compact('analysis', 'conversation', 'messages'));
     }
 }

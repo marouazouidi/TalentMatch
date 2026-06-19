@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CandidateAnalysisController;
+use App\Http\Controllers\ConversationController;
 use App\Http\Controllers\JobOfferController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
@@ -26,6 +27,11 @@ Route::middleware('auth')->group(function () {
         ->name('candidates.store');
     Route::get('/analyses/{analysis}', [CandidateAnalysisController::class, 'show'])
         ->name('analyses.show');
+
+    Route::get('/analyses/{analysis}/conversation', [ConversationController::class, 'show'])
+        ->name('conversations.show');
+    Route::post('/conversations/{conversation}/messages', [ConversationController::class, 'sendMessage'])
+        ->name('conversations.messages.store');
 });
 
 require __DIR__.'/auth.php';
