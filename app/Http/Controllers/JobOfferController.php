@@ -40,6 +40,8 @@ class JobOfferController extends Controller
     {
         $this->authorize('view', $offer);
 
+        $offer->loadMissing(['analyses.candidate']);
+
         return view('offers.show', compact('offer'));
     }
 

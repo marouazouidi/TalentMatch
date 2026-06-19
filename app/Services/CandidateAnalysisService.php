@@ -17,18 +17,24 @@ class CandidateAnalysisService
         $jobOffer = JobOffer::where('user_id', $userId)
             ->findOrFail($data['job_offer_id']);
 
-        $candidate = Candidate::create([
+        $candidate = Candidate::firstOrCreate([
             'name' => $data['candidate_name'],
             'cv_text' => $data['cv_text'],
         ]);
 
-        $analysis = Analysis::create([
-            'job_offer_id' => $jobOffer->id,
-            'candidate_id' => $candidate->id,
-            'status' => AnalysisStatus::Pending,
-        ]);
+        $analysis = Analysis::firstOrCreate(
+            [
+                'job_offer_id' => $jobOffer->id,
+                'candidate_id' => $candidate->id,
+            ],
+            [
+                'status' => AnalysisStatus::Pending,
+            ]
+        );
 
-        AnalyseCandidateJob::dispatch($analysis->id);
+        if ($analysis->wasRecentlyCreated) {
+            AnalyseCandidateJob::dispatch($analysis->id);
+        }
 
         return $analysis;
     }
